@@ -12,7 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
+      <Folder Include="Requests\" />
+      <Folder Include="Responses\" />
+      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>
