@@ -1,6 +1,6 @@
-﻿namespace MyBudgetTracker.Models;
+﻿namespace MyBudgetTracker.Responses;
 
-public class Category
+public class CategoryResponse
 {
     public Guid Id { get; set; }
 
