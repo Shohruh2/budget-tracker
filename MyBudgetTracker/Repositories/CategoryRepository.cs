@@ -19,15 +19,21 @@ public class CategoryRepository : ICategoryRepository
         return rowsAffected > 0;
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync(CancellationToken token = default)
+    public async Task<IEnumerable<Category>> GetAllAsync(Guid userId, CancellationToken token = default)
     {
-        var categories = await _dbContext.Categories.ToListAsync(token);
+        var categories = await _dbContext.Categories
+            .Where(c => c.UserId == userId)
+            .ToListAsync(token);
+
         return categories;
+
+        // var categories = await _dbContext.Categories.ToListAsync(token);
+        // return categories;
     }
 
-    public async Task<Category?> GetAsync(Guid id, CancellationToken token = default)
+    public async Task<Category?> GetAsync(Guid categoryId, CancellationToken token = default)
     {
-        var category = await _dbContext.Categories.FindAsync(id, token);
+        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == categoryId, cancellationToken: token);
         if (category == null)
         {
             return null;
@@ -36,10 +42,10 @@ public class CategoryRepository : ICategoryRepository
         return category;
     }
 
-    public async Task<bool> DeleteAsync(Guid id, CancellationToken token = default)
+    public async Task<bool> DeleteAsync(Guid categoryId, Guid userId, CancellationToken token = default)
     {
-        var categoryToDelete = await _dbContext.Categories.FindAsync(id, token);
-        if (categoryToDelete == null)
+        var categoryToDelete = await _dbContext.Categories.FindAsync(categoryId, token);
+        if (categoryToDelete == null || categoryToDelete.UserId != userId)
         {
             return false;
         }

@@ -25,15 +25,21 @@ public class CategoryService : ICategoryService
         return category;
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync(CancellationToken token = default)
+    public async Task<IEnumerable<Category>> GetAllAsync(Guid userId, CancellationToken token = default)
     {
-        var categories = await _categoryRepository.GetAllAsync(token);
+        var categories = await _categoryRepository.GetAllAsync(userId, token);
         return categories;
     }
 
-    public async Task<Category?> GetAsync(Guid id, CancellationToken token = default)
+    public async Task<Category?> GetAsync(Guid categoryId, Guid userId, CancellationToken token = default)
     {
-        var category = await _categoryRepository.GetAsync(id, token);
+        var category = await _categoryRepository.GetAsync(categoryId, token);
+
+        if (category != null && category.UserId != userId)
+        {
+            return null;
+        }
+        
         return category;
     }
 
@@ -49,8 +55,8 @@ public class CategoryService : ICategoryService
         return category;
     }
 
-    public async Task<bool> DeleteAsync(Guid id, CancellationToken token = default)
+    public async Task<bool> DeleteAsync(Guid categoryId, Guid userId, CancellationToken token = default)
     {
-        return await _categoryRepository.DeleteAsync(id, token);
+        return await _categoryRepository.DeleteAsync(categoryId, userId, token);
     }
 }

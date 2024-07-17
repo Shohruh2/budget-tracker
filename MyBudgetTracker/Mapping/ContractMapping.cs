@@ -50,13 +50,14 @@ public static class ContractMapping
         };
     }
     
-    public static Category MapToCategory(this UpdateCategoryRequest request, Guid id)
+    public static Category MapToCategory(this UpdateCategoryRequest request, Guid id, Guid userId)
     {
         return new Category
         {
             Id = id,
+            UserId = userId,
             Name = request.Name,
-            Type = request.Type
+            Type = request.Type,
         };
     }
 }

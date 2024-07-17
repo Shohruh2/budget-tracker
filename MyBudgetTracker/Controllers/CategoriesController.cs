@@ -11,6 +11,7 @@ namespace MyBudgetTracker.Controllers;
 
 
 [ApiController]
+[Authorize]
 public class CategoriesController : ControllerBase
 {
     private readonly ICategoryService _categoryService;
@@ -39,7 +40,9 @@ public class CategoriesController : ControllerBase
     public async Task<ActionResult<CustomResponse<CategoryResponse>>> Get([FromRoute] Guid id,
         CancellationToken token)
     {
-        var category = await _categoryService.GetAsync(id, token);
+        var currentUser = _currentUser.GetCurrentUser();
+        
+        var category = await _categoryService.GetAsync(id, currentUser.Id, token);
         if (category == null)
         {
             var errorResponse = CustomResponse<CategoryResponse>.CreateErrorResponse(new ErrorResponse
@@ -59,37 +62,47 @@ public class CategoriesController : ControllerBase
     [HttpGet(ApiEndpoints.Category.GetAll)]
     public async Task<ActionResult<CustomResponse<CategoriesResponse>>> GetAll(CancellationToken token)
     {
-        var categories = await _categoryService.GetAllAsync(token);
+        var currentUser = _currentUser.GetCurrentUser();
+        
+        var categories = await _categoryService.GetAllAsync(currentUser.Id, token);
         var categoriesResponse = categories.MapToResponse();
         var response = CustomResponse<CategoriesResponse>.CreateSuccessResponse(categoriesResponse);
         return Ok(response);
     }
 
     [HttpDelete(ApiEndpoints.Category.Delete)]
-    public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken token)
+    public async Task<ActionResult<CustomResponse<CategoryResponse>>> Delete([FromRoute] Guid id, CancellationToken token)
     {
-        var deleted = await _categoryService.DeleteAsync(id, token);
+        var currentUser = _currentUser.GetCurrentUser();
+        
+        var deleted = await _categoryService.DeleteAsync(id, currentUser.Id, token);
         if (!deleted)
         {
-            var errorResponse = new
+            var errorResponse = CustomResponse.CreateErrorResponse(new ErrorResponse
             {
-                Message = "Category not found"
-            };
+                Message = $"Can't find category in database ",
+                Code = HttpStatusCode.NotFound.ToString()
+            });
+
             return NotFound(errorResponse);
         }
 
-        var response = new
+        var responseMessage = new
         {
             Message = "Category deleted successfully"
         };
-        return Ok();
+        
+        var response = CustomResponse.CreateSuccessResponse(responseMessage);
+        return Ok(response);
     }
 
     [HttpPut(ApiEndpoints.Category.Update)]
     public async Task<ActionResult<CustomResponse<CategoryResponse>>> Update([FromRoute] Guid id,
         [FromBody] UpdateCategoryRequest request, CancellationToken token)
     {
-        var category = request.MapToCategory(id);
+        var currentUser = _currentUser.GetCurrentUser();
+        
+        var category = request.MapToCategory(id, currentUser.Id);
         var updatedCategory = await _categoryService.UpdateAsync(category, token);
         if (updatedCategory == null)
         {
