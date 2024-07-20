@@ -28,6 +28,8 @@ public class AuthController : ControllerBase
                 Message = "Registration failed",
                 Code = HttpStatusCode.BadRequest.ToString()
             });
+
+            return BadRequest(errorResponse);
         }
 
         var successResponse = CustomResponse<RegistrationResponse>.CreateSuccessResponse(new RegistrationResponse
@@ -54,7 +56,7 @@ public class AuthController : ControllerBase
                 Message = $"User {request.Username} not confirmed",
                 Code = HttpStatusCode.BadRequest.ToString()
             });
-            return errorResponse;
+            return BadRequest(errorResponse);
         }
 
         // var response = request.MapToResponse();
@@ -78,11 +80,11 @@ public class AuthController : ControllerBase
                 Message = "Login or password incorrect",
                 Code = HttpStatusCode.BadRequest.ToString()
             });
-            return errorResponse;
+            return BadRequest(errorResponse);
         }
 
         var successResponse = CustomResponse<AuthLoginResponse>.CreateSuccessResponse(tokens);
 
-        return successResponse;
+        return Ok(successResponse);
     }
 }

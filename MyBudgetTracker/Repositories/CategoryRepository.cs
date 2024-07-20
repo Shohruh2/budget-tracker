@@ -58,7 +58,7 @@ public class CategoryRepository : ICategoryRepository
     public async Task<bool> UpdateAsync(Category category, CancellationToken token = default)
     {
         var categoryToUpdate = await _dbContext.Categories.FindAsync(category.Id, token);
-        if (categoryToUpdate == null)
+        if (categoryToUpdate == null || categoryToUpdate.UserId != category.UserId)
         {
             return false;
         }
@@ -68,5 +68,10 @@ public class CategoryRepository : ICategoryRepository
 
         var rowsAffected = await _dbContext.SaveChangesAsync(token);
         return rowsAffected > 0;
+    }
+    
+    public async Task<IEnumerable<Category>> GetCategoriesAsync(IEnumerable<Guid> categoryIds, CancellationToken token = default)
+    {
+        return await _dbContext.Categories.Where(c => categoryIds.Contains(c.Id)).ToListAsync(token);
     }
 }

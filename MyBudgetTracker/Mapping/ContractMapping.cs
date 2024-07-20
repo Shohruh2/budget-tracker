@@ -50,14 +50,58 @@ public static class ContractMapping
         };
     }
     
-    public static Category MapToCategory(this UpdateCategoryRequest request, Guid id, Guid userId)
+    public static Category MapToCategory(this UpdateCategoryRequest request, Guid id, Guid userId, Category existingCategory)
     {
-        return new Category
+        existingCategory.Name = request.Name;
+        existingCategory.Type = request.Type;
+
+        return existingCategory;
+    }
+
+    public static Transaction MapToTransaction(this CreateTransactionRequest request, Guid userId)
+    {
+        return new Transaction()
         {
-            Id = id,
+            Id = Guid.NewGuid(),
             UserId = userId,
-            Name = request.Name,
-            Type = request.Type,
+            Amount = request.Amount,
+            Date = request.Date,
+            Description = request.Description,
+            CategoryId = request.CategoryId
         };
+    }
+
+    public static TransactionResponse MapToResponse(this Transaction transaction, Category category)
+    {
+        return new TransactionResponse()
+        {
+            Id = transaction.Id,
+            UserId = transaction.UserId,
+            Category = new ResponseCategory()
+            {
+                Id = transaction.CategoryId,
+                Name = category.Name,
+                Type = category.Type,
+            },
+            Amount = transaction.Amount,
+            Date = transaction.Date,
+            Description = transaction.Description,
+        };
+    }
+    
+    public static TransactionsResponse MapToResponse(this IEnumerable<Transaction> transactions, IDictionary<Guid, Category> categories)
+    {
+        return new TransactionsResponse()
+        {
+            Items = transactions.Select(transaction => transaction.MapToResponse(categories[transaction.CategoryId]))
+        };
+    }
+    
+    public static Transaction MapToTransaction(this UpdateTransactionRequest request, Guid id, Guid userId, Transaction existingTransaction)
+    {
+        existingTransaction.Amount = request.Amount;
+        existingTransaction.Description = request.Description;
+
+        return existingTransaction;
     }
 }

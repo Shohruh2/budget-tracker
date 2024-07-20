@@ -43,14 +43,8 @@ public class CategoryService : ICategoryService
         return category;
     }
 
-    public async Task<Category?> UpdateAsync(Category category, CancellationToken token = default)
+    public async Task<Category> UpdateAsync(Category category, CancellationToken token = default)
     {
-        var categoryExists = await _categoryRepository.GetAsync(category.Id, token);
-        if (categoryExists == null)
-        {
-            return null;
-        }
-
         await _categoryRepository.UpdateAsync(category, token);
         return category;
     }

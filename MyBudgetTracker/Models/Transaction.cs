@@ -1,6 +1,6 @@
 ﻿namespace MyBudgetTracker.Models;
 
-public class Transactions
+public class Transaction
 {
     public Guid Id { get; set; }
 
@@ -10,13 +10,7 @@ public class Transactions
 
     public decimal Amount { get; set; }
 
-    public MyEnum Type { get; set; }
+    public DateTime Date { get; set; }
 
-    public DateTime Data { get; set; }
-    
-    public enum MyEnum
-    {
-        Income,
-        Expense
-    }
+    public string Description { get; set; }
 }

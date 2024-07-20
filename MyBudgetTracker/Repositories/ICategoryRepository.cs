@@ -13,4 +13,6 @@ public interface ICategoryRepository
     Task<bool> DeleteAsync(Guid categoryId, Guid userId, CancellationToken token = default);
 
     Task<bool> UpdateAsync(Category category, CancellationToken token = default);
+
+    Task<IEnumerable<Category>> GetCategoriesAsync(IEnumerable<Guid> categoryIds, CancellationToken token = default);
 }
