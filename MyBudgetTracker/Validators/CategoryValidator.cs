@@ -9,7 +9,7 @@ public class CategoryValidator : AbstractValidator<CreateCategoryDto>
     {
         RuleFor(x => x.Name)
             .NotEmpty();
-        RuleFor(x => x.Type)
+        RuleFor(x => x.Kind)
             .NotEmpty();
         
     }

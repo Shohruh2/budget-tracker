@@ -6,13 +6,19 @@ public class Budget
 
     public Guid UserId { get; set; }
 
-    public int Month { get; set; }
+    public Guid CategoryId { get; set; }
 
-    public int Year { get; set; }
+    public decimal Amount { get; set; }
 
-    public decimal TotalIncome { get; set; }
+    public enum BudgetPeriod
+    {
+        Monthly,
+        Yearly
+    }
+    
+    public BudgetPeriod Period { get; set; }
 
-    public decimal TotalExpense { get; set; }
-
-    public DateTime CreatedAt { get; set; }
+    public DateTime StartDate { get; set; }
+    
+    public DateTime EndDate { get; set; }
 }

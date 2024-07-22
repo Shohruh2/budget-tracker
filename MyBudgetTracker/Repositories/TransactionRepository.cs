@@ -20,10 +20,20 @@ public class TransactionRepository : ITransactionRepository
         return rowsAffected > 0;
     }
 
-    public async Task<IEnumerable<Transaction>> GetAllAsync(Guid userId, CancellationToken token = default)
+    public async Task<List<Transaction>> GetAllAsync(Guid userId, CancellationToken token = default)
     {
         var transactions = await _dbContext.Transactions
             .Where(t => t.UserId == userId)
+            .ToListAsync(token);
+
+        return transactions;
+    }
+
+    public async Task<List<IGrouping<Category, Transaction>>?> GetAllGroupedAsync(Guid userId, CancellationToken token = default)
+    {
+        var transactions = await _dbContext.Transactions
+            .Include(x => x.Category)
+            .GroupBy(x => x.Category)
             .ToListAsync(token);
 
         return transactions;

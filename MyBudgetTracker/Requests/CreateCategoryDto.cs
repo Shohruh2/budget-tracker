@@ -1,8 +1,10 @@
-﻿namespace MyBudgetTracker.Requests;
+﻿using MyBudgetTracker.Models;
+
+namespace MyBudgetTracker.Requests;
 
 public class CreateCategoryDto
 {
     public string Name { get; set; }
 
-    public string Type { get; set; }
+    public CategoryKind Kind { get; set; }
 }

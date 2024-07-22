@@ -6,9 +6,9 @@ public class Category
 
     public Guid UserId { get; set; }
 
+    public CategoryKind Kind { get; set; }
+    
     public string Name { get; set; }
-
-    public string Type { get; set; }
-
+    
     public DateTime CreatedDate { get; set; }
 }

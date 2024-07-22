@@ -35,17 +35,12 @@ public class TransactionService : ITransactionService
         await _repository.CreateAsync(transaction, token);
         return transaction.MapToResponse(category);
     }
-
-    public async Task<TransactionsResponse> GetAllAsync(Guid userId, CancellationToken token = default)
+    
+    
+    public async Task<TransactionsResponse> GetAllGroupedAsync(Guid userId, CancellationToken token = default)
     {
-        var transactions = await _repository.GetAllAsync(userId, token);
-    
-        var categoryIds = transactions.Select(t => t.CategoryId).Distinct();
-        var categories = await _categoryRepository.GetCategoriesAsync(categoryIds, token);
-    
-        var categoriesDict = categories.ToDictionary(c => c.Id);
-
-        return transactions.MapToResponse(categoriesDict);
+        var transactions = await _repository.GetAllGroupedAsync(userId, token);
+        return transactions!.MapToResponse();
     }   
 
     public async Task<TransactionResponse?> GetAsync(Guid transactionId, Guid userId, CancellationToken token = default)

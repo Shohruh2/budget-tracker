@@ -49,7 +49,7 @@ public class TransactionsController : ControllerBase
     {
         var currentUser = _currentUser.GetCurrentUser();
 
-        var transactionResponse = await _service.GetAllAsync(currentUser.Id, token);
+        var transactionResponse = await _service.GetAllGroupedAsync(currentUser.Id, token);
         var response = CustomResponse<TransactionsResponse>.CreateSuccessResponse(transactionResponse);
         return Ok(response);
     }

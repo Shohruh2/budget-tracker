@@ -19,7 +19,7 @@ public class CategoryRepository : ICategoryRepository
         return rowsAffected > 0;
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync(Guid userId, CancellationToken token = default)
+    public async Task<List<Category>> GetAllAsync(Guid userId, CancellationToken token = default)
     {
         var categories = await _dbContext.Categories
             .Where(c => c.UserId == userId)
@@ -64,14 +64,16 @@ public class CategoryRepository : ICategoryRepository
         }
 
         categoryToUpdate.Name = category.Name;
-        categoryToUpdate.Type = category.Type;
+        categoryToUpdate.Kind = category.Kind;
 
         var rowsAffected = await _dbContext.SaveChangesAsync(token);
         return rowsAffected > 0;
     }
     
-    public async Task<IEnumerable<Category>> GetCategoriesAsync(IEnumerable<Guid> categoryIds, CancellationToken token = default)
+    public async Task<List<Category>> GetCategoriesAsync(IEnumerable<Guid> categoryIds, CancellationToken token = default)
     {
-        return await _dbContext.Categories.Where(c => categoryIds.Contains(c.Id)).ToListAsync(token);
+        return await _dbContext.Categories
+            .Where(c => categoryIds.Contains(c.Id))
+            .ToListAsync(token);
     }
 }

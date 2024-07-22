@@ -8,7 +8,7 @@ public interface ITransactionService
 {
     Task<TransactionResponse?> CreateAsync(CreateTransactionRequest request, Guid userId, CancellationToken token = default);
 
-    Task<TransactionsResponse> GetAllAsync(Guid userId, CancellationToken token = default);
+    Task<TransactionsResponse> GetAllGroupedAsync(Guid userId, CancellationToken token = default);
 
     Task<TransactionResponse?> GetAsync(Guid transactionId, Guid userId, CancellationToken token = default);
 

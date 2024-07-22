@@ -1,4 +1,6 @@
-﻿namespace MyBudgetTracker.Responses;
+﻿using MyBudgetTracker.Models;
+
+namespace MyBudgetTracker.Responses;
 
 public class CategoryResponse
 {
@@ -8,7 +10,7 @@ public class CategoryResponse
 
     public string Name { get; set; }
 
-    public string Type { get; set; }
+    public CategoryKind Kind { get; set; }
 
     public DateTime CreatedDate { get; set; }
 }

@@ -24,7 +24,7 @@ public static class ContractMapping
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
-            Type = request.Type,
+            Kind = request.Kind,
             CreatedDate = DateTime.Now,
             UserId = userId
         };
@@ -38,7 +38,7 @@ public static class ContractMapping
             Name = category.Name,
             UserId = category.UserId,
             CreatedDate = category.CreatedDate,
-            Type = category.Type
+            Kind = category.Kind
         };
     }
     
@@ -53,7 +53,7 @@ public static class ContractMapping
     public static Category MapToCategory(this UpdateCategoryRequest request, Guid id, Guid userId, Category existingCategory)
     {
         existingCategory.Name = request.Name;
-        existingCategory.Type = request.Type;
+        existingCategory.Kind = request.Kind;
 
         return existingCategory;
     }
@@ -81,7 +81,7 @@ public static class ContractMapping
             {
                 Id = transaction.CategoryId,
                 Name = category.Name,
-                Type = category.Type,
+                Type = category.Kind,
             },
             Amount = transaction.Amount,
             Date = transaction.Date,
@@ -89,7 +89,29 @@ public static class ContractMapping
         };
     }
     
-    public static TransactionsResponse MapToResponse(this IEnumerable<Transaction> transactions, IDictionary<Guid, Category> categories)
+    public static TransactionsResponse MapToResponse(this List<IGrouping<Category, Transaction>?> groupedTransactions)
+    {
+        // var result = new List<TransactionResponse>();
+        // foreach (var grouping in groupedTransactions)
+        // {
+        //     foreach (var transaction in grouping)
+        //     {
+        //         result.Add(transaction.MapToResponse(grouping.Key));
+        //     }
+        // }
+        
+        // Which is same as above ^
+        var result = (
+            from grouping in groupedTransactions 
+            from transaction in grouping 
+            select transaction.MapToResponse(grouping.Key)).ToList();
+        return new TransactionsResponse()
+        {
+            Items = result
+        };
+    }
+    
+    public static TransactionsResponse MapToResponseOld(this IEnumerable<Transaction> transactions, IDictionary<Guid, Category> categories)
     {
         return new TransactionsResponse()
         {

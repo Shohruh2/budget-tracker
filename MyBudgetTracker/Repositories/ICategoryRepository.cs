@@ -6,7 +6,7 @@ public interface ICategoryRepository
 {
     Task<bool> CreateAsync(Category category, CancellationToken token = default);
 
-    Task<IEnumerable<Category>> GetAllAsync(Guid userId, CancellationToken token = default);
+    Task<List<Category>> GetAllAsync(Guid userId, CancellationToken token = default);
     
     Task<Category?> GetAsync(Guid categoryId, CancellationToken token = default);
 
@@ -14,5 +14,5 @@ public interface ICategoryRepository
 
     Task<bool> UpdateAsync(Category category, CancellationToken token = default);
 
-    Task<IEnumerable<Category>> GetCategoriesAsync(IEnumerable<Guid> categoryIds, CancellationToken token = default);
+    Task<List<Category>> GetCategoriesAsync(IEnumerable<Guid> categoryIds, CancellationToken token = default);
 }

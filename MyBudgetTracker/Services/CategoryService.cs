@@ -25,7 +25,7 @@ public class CategoryService : ICategoryService
         return category;
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync(Guid userId, CancellationToken token = default)
+    public async Task<List<Category>> GetAllAsync(Guid userId, CancellationToken token = default)
     {
         var categories = await _categoryRepository.GetAllAsync(userId, token);
         return categories;

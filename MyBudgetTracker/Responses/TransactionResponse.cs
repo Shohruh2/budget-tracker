@@ -1,4 +1,6 @@
-﻿namespace MyBudgetTracker.Responses;
+﻿using MyBudgetTracker.Models;
+
+namespace MyBudgetTracker.Responses;
 
 public class TransactionResponse
 {
@@ -21,5 +23,5 @@ public class ResponseCategory
     
     public string Name { get; set; }
 
-    public string Type { get; set; }
+    public CategoryKind Type { get; set; }
 }
