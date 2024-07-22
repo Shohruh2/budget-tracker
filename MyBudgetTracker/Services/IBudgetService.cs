@@ -15,4 +15,6 @@ public interface IBudgetService
     Task<BudgetResponse?> UpdateAsync(UpdateBudgetRequest request, Guid id, Guid userId, CancellationToken token = default);
 
     Task<bool> DeleteAsync(Guid id, Guid userId, CancellationToken token = default);
+
+    Task<BudgetStatisticsResponse?> GetBudgetStatisticsAsync(Guid userId, CancellationToken token = default);
 }

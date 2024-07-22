@@ -15,4 +15,6 @@ public interface ITransactionRepository
     Task<bool> DeleteAsync(Guid id, Guid userId, CancellationToken token = default);
 
     Task<bool> UpdateAsync(Transaction transaction, CancellationToken token = default);
+
+    Task<IEnumerable<Transaction>> GetTransactionsByUserIdAsync(Guid userId, CancellationToken token);
 }

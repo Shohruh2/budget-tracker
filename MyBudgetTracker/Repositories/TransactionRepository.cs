@@ -70,4 +70,11 @@ public class TransactionRepository : ITransactionRepository
         var rowsAffected = await _dbContext.SaveChangesAsync(token);
         return rowsAffected > 0;
     }
+    
+    public async Task<IEnumerable<Transaction>> GetTransactionsByUserIdAsync(Guid userId, CancellationToken token)
+    {
+        return await _dbContext.Transactions
+            .Where(t => t.UserId == userId)
+            .ToListAsync(token);
+    }
 }

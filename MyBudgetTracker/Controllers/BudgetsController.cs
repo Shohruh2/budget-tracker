@@ -134,4 +134,25 @@ public class BudgetsController : ControllerBase
         var response = CustomResponse.CreateSuccessResponse(message);
         return Ok(response);
     }
+    
+    [HttpGet(ApiEndpoints.Budget.Statistics)]
+    public async Task<ActionResult<CustomResponse<BudgetStatisticsResponse>>> GetBudgetStatistics(CancellationToken token)
+    {
+        var currentUser = _currentUser.GetCurrentUser();
+
+        var budgetStatistics = await _service.GetBudgetStatisticsAsync(currentUser.Id, token);
+        if (budgetStatistics == null)
+        {
+            var errorResponse = CustomResponse<BudgetStatisticsResponse>.CreateErrorResponse(new ErrorResponse
+            {
+                Message = $"Cannot find budget statistics",
+                Code = HttpStatusCode.NotFound.ToString()
+            });
+
+            return NotFound(errorResponse);
+        }
+
+        var response = CustomResponse<BudgetStatisticsResponse>.CreateSuccessResponse(budgetStatistics);
+        return Ok(response);
+    }
 }

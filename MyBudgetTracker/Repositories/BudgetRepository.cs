@@ -62,4 +62,11 @@ public class BudgetRepository : IBudgetRepository
         var rowsAffected = await _dbContext.SaveChangesAsync(token);
         return rowsAffected > 0;
     }
+
+    public async Task<Budget?> GetByUserIdAsync(Guid userId, CancellationToken token = default)
+    {
+        return await _dbContext.Budgets
+            .Include(b => b.Category)
+            .FirstOrDefaultAsync(b => b.UserId == userId, token);
+    }
 }
