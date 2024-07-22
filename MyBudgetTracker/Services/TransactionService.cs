@@ -64,7 +64,7 @@ public class TransactionService : ITransactionService
     public async Task<TransactionResponse?> UpdateAsync(Guid transactionId, UpdateTransactionRequest request, Guid userId, CancellationToken token = default)
     {
         var transaction = await _repository.GetAsync(transactionId, token);
-        if (transaction == null)
+        if (transaction == null || transaction.UserId != userId)
         {
             return null;
         }

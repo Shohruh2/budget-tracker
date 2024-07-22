@@ -17,6 +17,8 @@ public static class ApplicationServiceCollectionExtensions
         services.AddTransient<ICategoryRepository, CategoryRepository>();
         services.AddTransient<ITransactionService, TransactionService>();
         services.AddTransient<ITransactionRepository, TransactionRepository>();
+        services.AddTransient<IBudgetService, BudgetService>();
+        services.AddTransient<IBudgetRepository, BudgetRepository>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddTransient<IValidator<CreateUserRequest>, CreateUserValidator>();
         services.AddTransient<IValidator<CreateCategoryDto>, CategoryValidator>();

@@ -32,6 +32,7 @@ public class TransactionRepository : ITransactionRepository
     public async Task<List<IGrouping<Category, Transaction>>?> GetAllGroupedAsync(Guid userId, CancellationToken token = default)
     {
         var transactions = await _dbContext.Transactions
+            .Where(t => t.UserId == userId)
             .Include(x => x.Category)
             .GroupBy(x => x.Category)
             .ToListAsync(token);

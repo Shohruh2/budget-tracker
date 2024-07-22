@@ -81,7 +81,7 @@ public static class ContractMapping
             {
                 Id = transaction.CategoryId,
                 Name = category.Name,
-                Type = category.Kind,
+                Kind = category.Kind,
             },
             Amount = transaction.Amount,
             Date = transaction.Date,
@@ -111,19 +111,89 @@ public static class ContractMapping
         };
     }
     
-    public static TransactionsResponse MapToResponseOld(this IEnumerable<Transaction> transactions, IDictionary<Guid, Category> categories)
+    // public static TransactionsResponse MapToResponseOld(this IEnumerable<Transaction> transactions, IDictionary<Guid, Category> categories)
+    // {
+    //     return new TransactionsResponse()
+    //     {
+    //         Items = transactions.Select(transaction => transaction.MapToResponse(categories[transaction.CategoryId]))
+    //     };
+    // }
+    //
+    // public static Transaction MapToTransaction(this UpdateTransactionRequest request, Guid id, Guid userId, Transaction existingTransaction)
+    // {
+    //     existingTransaction.Amount = request.Amount;
+    //     existingTransaction.Description = request.Description;
+    //
+    //     return existingTransaction;
+    // }
+
+    public static Budget MapToBudget(this CreateBudgetRequest request, Guid userId)
     {
-        return new TransactionsResponse()
+        DateTime now = DateTime.Now;
+        int daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
+        
+        return new Budget()
+        { 
+            Id = Guid.NewGuid(),
+            CategoryId = request.CategoryId,
+            UserId = userId,
+            Amount = request.Amount,
+            Period = request.Period,
+            StartDate = DateTime.Now,
+            EndDate = new DateTime(now.Year, now.Month, daysInMonth)
+        };
+    }
+
+    public static BudgetResponse MapToResponse(this Budget budget, Category category)
+    {
+        return new BudgetResponse()
         {
-            Items = transactions.Select(transaction => transaction.MapToResponse(categories[transaction.CategoryId]))
+            Id = budget.Id,
+            UserId = budget.UserId,
+            Amount = budget.Amount,
+            Period = budget.Period,
+            StartDate = budget.StartDate,
+            EndDate = budget.EndDate,
+            Category = new ResponseCategory()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Kind = category.Kind
+            }
         };
     }
     
-    public static Transaction MapToTransaction(this UpdateTransactionRequest request, Guid id, Guid userId, Transaction existingTransaction)
+    public static TransactionsResponse MapToRponse(this List<IGrouping<Category, Transaction>?> groupedTransactions)
     {
-        existingTransaction.Amount = request.Amount;
-        existingTransaction.Description = request.Description;
+        // var result = new List<TransactionResponse>();
+        // foreach (var grouping in groupedTransactions)
+        // {
+        //     foreach (var transaction in grouping)
+        //     {
+        //         result.Add(transaction.MapToResponse(grouping.Key));
+        //     }
+        // }
+        
+        // Which is same as above ^
+        var result = (
+            from grouping in groupedTransactions 
+            from transaction in grouping 
+            select transaction.MapToResponse(grouping.Key)).ToList();
+        return new TransactionsResponse()
+        {
+            Items = result
+        };
+    }
 
-        return existingTransaction;
+    public static BudgetsResponse MapToResponse(this List<IGrouping<Category, Budget>?> groupedBudgets)
+    {
+        var result = (
+            from grouping in groupedBudgets
+            from budget in grouping
+            select budget.MapToResponse(grouping.Key)).ToList();
+        return new BudgetsResponse()
+        {
+            Items = result
+        };
     }
 }
