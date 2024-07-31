@@ -14,5 +14,5 @@ public interface IBudgetRepository
 
     Task<bool> DeleteAsync(Guid id, Guid userId, CancellationToken token = default);
 
-    Task<Budget?> GetByUserIdAsync(Guid userId, CancellationToken token = default);
+    Task<List<CategoryWithTransactions>> GetByUserIdAsync(Guid userId, CancellationToken token = default);
 }

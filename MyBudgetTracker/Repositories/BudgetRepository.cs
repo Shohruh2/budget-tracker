@@ -63,10 +63,22 @@ public class BudgetRepository : IBudgetRepository
         return rowsAffected > 0;
     }
 
-    public async Task<Budget?> GetByUserIdAsync(Guid userId, CancellationToken token = default)
+    public async Task<List<CategoryWithTransactions>> GetByUserIdAsync(Guid userId, CancellationToken token = default)
     {
-        return await _dbContext.Budgets
-            .Include(b => b.Category)
-            .FirstOrDefaultAsync(b => b.UserId == userId, token);
+        var result = await _dbContext.Categories
+            .Where(c => c.UserId == userId)
+            .GroupJoin(
+                _dbContext.Transactions.Where(t => t.UserId == userId),
+                c => c.Id,
+                t => t.CategoryId,
+                (category, transactions) => new CategoryWithTransactions
+                {
+                    Category = category,
+                    Transactions = transactions.ToList()
+                }
+            )
+            .ToListAsync(token);
+
+        return result;
     }
 }

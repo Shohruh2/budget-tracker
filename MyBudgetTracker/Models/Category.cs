@@ -11,4 +11,6 @@ public class Category
     public string Name { get; set; }
     
     public DateTime CreatedDate { get; set; }
+
+    public virtual Budget Budget { get; set; }
 }

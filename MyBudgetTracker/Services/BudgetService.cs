@@ -84,24 +84,19 @@ public class BudgetService : IBudgetService
 
     public async Task<BudgetStatisticsResponse?> GetBudgetStatisticsAsync(Guid userId, CancellationToken token)
     {
-        var budget = await _budgetRepository.GetByUserIdAsync(userId, token);
-        if (budget == null) return null;
-
-        var categories = await _categoryRepository.GetAllAsync(budget.UserId, token);
-
-        var transactions = await _transactionRepository.GetTransactionsByUserIdAsync(userId, token);
+        var categoriesWithBudgets = await _budgetRepository.GetByUserIdAsync(userId, token);
 
         var statistics = new List<CategoryBudgetStatistic>();
 
-        foreach (var category in categories)
+        foreach (var item in categoriesWithBudgets)    
         {
-            var categoryTransactions = transactions.Where(t => t.CategoryId == category.Id);
-            var totalSpent = categoryTransactions.Sum(t => t.Amount);
+            var totalSpent = item.Transactions.Sum(t => t.Amount);
+            var budget = item.Category.Budget;
 
             statistics.Add(new CategoryBudgetStatistic
             {
-                CategoryId = category.Id,
-                CategoryName = category.Name,
+                CategoryId = item.Category.Id,
+                CategoryName = item.Category.Name,
                 BudgetAmount = budget.Amount,
                 TotalSpent = totalSpent,
                 RemainingAmount = budget.Amount - totalSpent
